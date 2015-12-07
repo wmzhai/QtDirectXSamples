@@ -1,24 +1,39 @@
 #pragma once
 
-#define USE_D2D 1
+#include <windows.h>
+#include <d2d1.h>
+#include <d2d1helper.h>
+#include <dwrite.h>
+#include <wincodec.h>
 
+#pragma comment(lib,"d2d1.lib")
+#pragma comment(lib,"dwrite.lib")
+#pragma comment(lib,"windowscodecs.lib")
+#pragma comment(lib,"dxgi.lib")
 
-#include "../common/common.h"
+#ifndef V_RETURN
+#define V_RETURN(x)    { hr = (x); if( FAILED(hr) ) { return hr; } }
+#endif
+
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(p)       { if (p) { delete (p);     (p)=NULL; } }
+#endif    
+#ifndef SAFE_DELETE_ARRAY
+#define SAFE_DELETE_ARRAY(p) { if (p) { delete[] (p);   (p)=NULL; } }
+#endif    
+#ifndef SAFE_RELEASE
+#define SAFE_RELEASE(p)      { if (p) { (p)->Release(); (p)=NULL; } }
+#endif
 
 #include <QWidget.h>
 #include <QResizeEvent>
-#include <QMainWindow>
-#include <QStatusBar>
-#include <QVector2D>
-#include <QVector3D>
-#include <QVector4D>
 
 class QD2DWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	BT_DECLARE_ALIGNED_ALLOCATOR()
+	
 
 	QD2DWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0) : QWidget(parent, flags), m_pD2DFactory(0)
 	{
