@@ -1,10 +1,12 @@
 #include "qtd2dsample.h"
 #include <QtWidgets/QApplication>
 
+#include "QDxWidget.h"
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	QtD2DSample w;
+	QDxWidget w;
 	w.show();
 	return a.exec();
 }
