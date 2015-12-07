@@ -3,6 +3,7 @@
 
 #include <QWidget.h>
 
+#include "../common/common.h"
 
 class QDxWidget : public QWidget
 {
