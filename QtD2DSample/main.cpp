@@ -1,4 +1,3 @@
-#include "qtd2dsample.h"
 #include <QtWidgets/QApplication>
 
 #include "QD2DWidget.h"

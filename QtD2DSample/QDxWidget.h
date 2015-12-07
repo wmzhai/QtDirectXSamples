@@ -2,7 +2,6 @@
 
 
 #include "../common/common.h"
-#include "../common/camera.h"
 
 #include <QWidget.h>
 #include <QResizeEvent>
@@ -28,12 +27,9 @@ public:
 		m_standBy = false;
 		m_lastRendered = 0;
 		m_fTime = 0;
-		m_camera = (Camera*)_aligned_malloc(sizeof(Camera), 16);
-		m_camera->initialize();
 	}
 	virtual ~QDxWidget()
 	{
-		_aligned_free(m_camera);
 	}
 
 	virtual void setVisible(bool visible)
@@ -77,13 +73,13 @@ protected:
 	QPaintEngine *paintEngine() const { return 0; }
 	virtual void onResize(UINT, UINT) = 0;
 
-	virtual void	paintEvent(QPaintEvent *e)
+	virtual void paintEvent(QPaintEvent *e)
 	{
 		Q_UNUSED(e);
 		render();
 	}
 
-	virtual void	resizeEvent(QResizeEvent *p_event)
+	virtual void resizeEvent(QResizeEvent *p_event)
 	{
 		QSize newSize = size();
 		if (p_event)
@@ -105,10 +101,7 @@ protected:
 		}
 	}
 
-
-	//! Pointer of Camera for 16-byte alignment
-	Camera*	m_camera;
-
+	
 	//! if stand-by mode
 	bool	m_standBy;
 
