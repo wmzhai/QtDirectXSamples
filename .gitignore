@@ -1,0 +1,7 @@
+*.sdf
+*.opendb
+*.aps
+*.suo
+Debug
+Release
+.vs
