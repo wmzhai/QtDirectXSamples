@@ -151,6 +151,92 @@ public:
 		return S_OK;
 	}
 
+
+	//-----------------------------------------------------------------------------
+	// Name: clearRenderTarget()
+	// Desc: Clear the render target
+	//-----------------------------------------------------------------------------
+	void	clearRenderTarget(D2D1::ColorF ClearColor)
+	{
+		m_pHwndRenderTarget->Clear(ClearColor);
+	}
+
+	//-----------------------------------------------------------------------------
+	// Name: beginDraw()
+	// Desc: Begin draw
+	//-----------------------------------------------------------------------------
+	void	beginDraw()
+	{
+		m_pHwndRenderTarget->BeginDraw();
+	}
+
+	//-----------------------------------------------------------------------------
+	// Name: endDraw()
+	// Desc: End draw
+	//-----------------------------------------------------------------------------
+	HRESULT	endDraw()
+	{
+		HRESULT hr = m_pHwndRenderTarget->EndDraw();
+		if (hr == D2DERR_RECREATE_TARGET)
+		{
+			uninitialize();
+			hr = initialize();
+		}
+		return hr;
+	}
+
+	//-----------------------------------------------------------------------------
+	// Name: render()
+	// Desc: Draws the scene
+	//-----------------------------------------------------------------------------
+	virtual HRESULT	render()
+	{
+		if (!m_pHwndRenderTarget) return E_FAIL;
+		if ((m_pHwndRenderTarget->CheckWindowState() & D2D1_WINDOW_STATE_OCCLUDED)) return E_FAIL;
+
+		HRESULT hr = S_OK;
+
+		static const WCHAR sc_helloWorld[] = L"Hello, World!";
+
+		beginDraw();
+
+		m_pHwndRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+		clearRenderTarget(D2D1::ColorF(D2D1::ColorF::White));
+
+		m_pHwndRenderTarget->DrawText(
+			sc_helloWorld,
+			ARRAYSIZE(sc_helloWorld) - 1,
+			m_pTextFormat,
+			D2D1::RectF(0, 0, width(), height()),
+			m_pBlackBrush
+			);
+
+		endDraw();
+
+		return S_OK;
+	}
+
+	void	onResize(UINT nWidth, UINT nHeight)
+	{
+		HRESULT hr = S_OK;
+
+		if (m_pHwndRenderTarget)
+		{
+			// Note: This method can fail, but it's okay to ignore the
+			// error here -- it will be repeated on the next call to
+			// EndDraw.
+			D2D1_SIZE_U size;
+			size.width = nWidth;
+			size.height = nHeight;
+
+			m_pHwndRenderTarget->Resize(size);
+		}
+		render();
+	}
+
+
+
 private:
 	ID2D1Factory*			m_pD2DFactory;
 

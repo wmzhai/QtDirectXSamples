@@ -1,10 +1,17 @@
 #pragma once
 
 
-#include <QWidget.h>
-
 #include "../common/common.h"
 #include "../common/camera.h"
+
+#include <QWidget.h>
+#include <QResizeEvent>
+#include <QMainWindow>
+#include <QStatusBar>
+#include <QVector2D>
+#include <QVector3D>
+#include <QVector4D>
+
 
 class QDxWidget : public QWidget
 {
@@ -67,6 +74,37 @@ public:
 
 
 protected:
+	QPaintEngine *paintEngine() const { return 0; }
+	virtual void onResize(UINT, UINT) = 0;
+
+	virtual void	paintEvent(QPaintEvent *e)
+	{
+		Q_UNUSED(e);
+		render();
+	}
+
+	virtual void	resizeEvent(QResizeEvent *p_event)
+	{
+		QSize newSize = size();
+		if (p_event)
+		{
+			newSize = p_event->size();
+			// if( width()==newSize.width() && height()==newSize.height() ) return;
+			QWidget::resizeEvent(p_event);
+		}
+		onResize(newSize.width(), newSize.height());
+	}
+
+	void keyPressEvent(QKeyEvent *e)
+	{
+		switch (e->key()) {
+			//case Qt::Key_Escape:
+			break;
+		default:
+			QWidget::keyPressEvent(e);
+		}
+	}
+
 
 	//! Pointer of Camera for 16-byte alignment
 	Camera*	m_camera;
