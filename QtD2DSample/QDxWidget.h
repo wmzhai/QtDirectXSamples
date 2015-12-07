@@ -29,6 +29,43 @@ public:
 		_aligned_free(m_camera);
 	}
 
+	virtual void setVisible(bool visible)
+	{
+		if (visible)
+		{
+			QWidget::setVisible(visible);
+			//initialize();
+		}
+		else
+		{
+			//uninitialize();
+			QWidget::setVisible(visible);
+		}
+	}
+
+
+	virtual HRESULT	initialize() = 0;
+	virtual void	uninitialize() = 0;
+
+	virtual HRESULT	restoreDeviceObjects() = 0;
+	virtual HRESULT	invalidateDeviceObjects() = 0;
+
+	virtual void setTime(double fTime)
+	{
+		m_fTime = fTime;
+	}
+
+	virtual HRESULT	render()
+	{
+		return S_OK;
+	}
+
+	virtual HRESULT	present()
+	{
+		return S_OK;
+	}
+
+
 protected:
 
 	//! Pointer of Camera for 16-byte alignment
