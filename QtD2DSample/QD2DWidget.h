@@ -29,7 +29,7 @@ public:
 	{
 		if (!m_pD2DFactory || !m_pDWriteFactory) return E_FAIL;
 
-		SAFE_RELEASE(m_pBlackBrush);
+		SAFE_RELEASE(m_pBrush);
 		SAFE_RELEASE(m_pTextFormat);
 
 		return S_OK;
@@ -144,8 +144,8 @@ public:
 
 		// Create a black brush.
 		hr = m_pHwndRenderTarget->CreateSolidColorBrush(
-			D2D1::ColorF(D2D1::ColorF::Black),
-			&m_pBlackBrush
+			D2D1::ColorF(D2D1::ColorF::White),
+			&m_pBrush
 			);
 
 		return S_OK;
@@ -202,14 +202,14 @@ public:
 
 		m_pHwndRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-		clearRenderTarget(D2D1::ColorF(D2D1::ColorF::White));
+		clearRenderTarget(D2D1::ColorF(D2D1::ColorF::Black));
 
 		m_pHwndRenderTarget->DrawText(
 			sc_helloWorld,
 			ARRAYSIZE(sc_helloWorld) - 1,
 			m_pTextFormat,
-			D2D1::RectF(0, 0, width(), height()),
-			m_pBlackBrush
+			D2D1::RectF(0, 0, width()/2, height()/2),
+			m_pBrush
 			);
 
 		endDraw();
@@ -246,7 +246,7 @@ private:
 
 	ID2D1HwndRenderTarget*	m_pHwndRenderTarget;
 
-	ID2D1SolidColorBrush*	m_pBlackBrush;
+	ID2D1SolidColorBrush*	m_pBrush;
 
 	IDWriteTextFormat*		m_pTextFormat;
 };
