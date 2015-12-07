@@ -2,13 +2,29 @@
 
 #define USE_D2D 1
 
-#include "QDxWidget.h"
 
-class QD2DWidget : public QDxWidget
+#include "../common/common.h"
+
+#include <QWidget.h>
+#include <QResizeEvent>
+#include <QMainWindow>
+#include <QStatusBar>
+#include <QVector2D>
+#include <QVector3D>
+#include <QVector4D>
+
+class QD2DWidget : public QWidget
 {
+	Q_OBJECT
+
 public:
-	QD2DWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0) : QDxWidget(parent, flags), m_pD2DFactory(0)
+	BT_DECLARE_ALIGNED_ALLOCATOR()
+
+	QD2DWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0) : QWidget(parent, flags), m_pD2DFactory(0)
 	{
+		setAttribute(Qt::WA_PaintOnScreen);
+		setAttribute(Qt::WA_NoSystemBackground);
+
 		initialize();
 	}
 
@@ -217,7 +233,7 @@ public:
 		return S_OK;
 	}
 
-	void	onResize(UINT nWidth, UINT nHeight)
+	void onResize(UINT nWidth, UINT nHeight)
 	{
 		HRESULT hr = S_OK;
 
@@ -235,18 +251,44 @@ public:
 		render();
 	}
 
+protected:
+	QPaintEngine *paintEngine() const { return 0; }
+	
+
+	virtual void paintEvent(QPaintEvent *e)
+	{
+		Q_UNUSED(e);
+		render();
+	}
+
+	virtual void resizeEvent(QResizeEvent *p_event)
+	{
+		QSize newSize = size();
+		if (p_event)
+		{
+			newSize = p_event->size();
+			// if( width()==newSize.width() && height()==newSize.height() ) return;
+			QWidget::resizeEvent(p_event);
+		}
+		onResize(newSize.width(), newSize.height());
+	}
+
+	void keyPressEvent(QKeyEvent *e)
+	{
+		switch (e->key()) {
+			//case Qt::Key_Escape:
+			break;
+		default:
+			QWidget::keyPressEvent(e);
+		}
+	}
 
 
 private:
 	ID2D1Factory*			m_pD2DFactory;
-
 	IWICImagingFactory*		m_pWICFactory;
-
 	IDWriteFactory*			m_pDWriteFactory;
-
 	ID2D1HwndRenderTarget*	m_pHwndRenderTarget;
-
 	ID2D1SolidColorBrush*	m_pBrush;
-
 	IDWriteTextFormat*		m_pTextFormat;
 };
